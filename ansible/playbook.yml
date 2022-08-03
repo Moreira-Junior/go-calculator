@@ -1,0 +1,11 @@
+---
+- name: go
+  hosts: 127.0.0.1
+  remote_user: ubuntu
+  become: true
+  tasks:
+
+  - name: install go
+    apt:
+      name: golang-go
+      state: present
