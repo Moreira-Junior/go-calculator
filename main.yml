@@ -1,0 +1,38 @@
+---
+- name: vault
+  hosts: localhost
+  remote_user: ubuntu
+  become: true
+  tasks:
+    - name: installing unzip
+      apt:
+        name: unzip
+    - name: Creating vault user group
+      group: 
+        name: vault
+      become: true
+    - name: Creating vault user
+      user:
+        name: vault
+        group: vault
+        system: yes
+        shell: "/sbin/nologin"
+        comment: "vault nologin User"
+        createhome: "no"
+        state: present
+    - name: Download binary
+      get_url:
+        url: https://releases.hashicorp.com/vault/1.11.3/vault_1.11.3_linux_amd64.zip
+        dest: /tmp/vault
+        owner: vault
+        group: vault
+        mode: 0755
+      register: vault_download
+    - name: "Unzip vault archive"
+      unarchive:
+        src: /tmp/vault
+        dest: /usr/local/bin
+        copy: no
+        owner: vault
+        group: vault
+        mode: 0755
